@@ -47,6 +47,16 @@ set IG_USERNAME=YOUR_IG_USERNAME
 set IG_PASSWORD=YOUR_IG_PASSWORD
 ```
 
+- If you want to search for other user's unfollowers, you can set an environment variable of the target user's Instagram username so the program would search for the user first before fetching the unfollowers. The profile of your target must be public, or you have to be his/her follower. If both of the critierias are not met, you will receive no data. This step is optional and can be skipped. If you skip this step, then the program will check for your account instead.
+
+```bash
+# UNIX
+export IG_TARGET=YOUR_TARGETED_IG_USERNAME
+
+# Windows
+set IG_TARGET=YOUR_TARGETED_IG_USERNAME
+```
+
 - Run the project.
 
 ```bash
@@ -57,7 +67,7 @@ yarn start
 npm start
 ```
 
-- You will see the results exported in `out.json` in the `out` folder. Check it out there.
+- It will take some time depending on the size of your followers/followings. You will see the results exported in `out.json` in the `out` folder. Check it out there.
 
 - Finally, **change back your Instagram password and re-enable your Two Factor Authentication after you have finished using this application. Do NOT leave the password as it is**.
 
