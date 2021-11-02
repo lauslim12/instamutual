@@ -67,7 +67,7 @@ export async function getMyFollowings(
 export function getUnfollowers(
   followers: AccountFollowersFeedResponseUsersItem[],
   followings: AccountFollowingFeedResponseUsersItem[]
-) {
+): AccountFollowingFeedResponseUsersItem[] {
   const followersUsername = new Set(followers.map(({ username }) => username));
   const unfollowers = followings.filter(
     ({ username }) => !followersUsername.has(username)

@@ -31,7 +31,7 @@ export function createOutputData(
  *
  * @param output - Output data that is ready to be processed
  */
-export function writeOutputToFile(output: Output) {
+export function writeOutputToFile(output: Output): void {
   const outputPath = path.join(__dirname, '..', 'out', 'output.json');
   const outputFile = JSON.stringify(output, null, 2);
 
