@@ -26,12 +26,14 @@ export async function getAllItemsFromFeed<T>(feed: Feed<any, T>): Promise<T[]> {
  * Gets all followers of an account.
  *
  * @param ig - Instagram API client
+ * @param uid - Target user ID to be searched for
  * @returns All of your followers
  */
 export async function getMyFollowers(
-  ig: IgApiClient
+  ig: IgApiClient,
+  uid: string | number
 ): Promise<AccountFollowersFeedResponseUsersItem[]> {
-  const followersFeed = ig.feed.accountFollowers(ig.state.cookieUserId);
+  const followersFeed = ig.feed.accountFollowers(uid);
   const allFollowers = await getAllItemsFromFeed(followersFeed);
 
   return allFollowers;
@@ -41,12 +43,14 @@ export async function getMyFollowers(
  * Gets all followings of an account.
  *
  * @param ig - Instagram API client
+ * @param uid - Target user ID to be searched for
  * @returns All of your followings
  */
 export async function getMyFollowings(
-  ig: IgApiClient
+  ig: IgApiClient,
+  uid: string | number
 ): Promise<AccountFollowingFeedResponseUsersItem[]> {
-  const followingsFeed = ig.feed.accountFollowing(ig.state.cookieUserId);
+  const followingsFeed = ig.feed.accountFollowing(uid);
   const allFollowings = await getAllItemsFromFeed(followingsFeed);
 
   return allFollowings;
