@@ -18,11 +18,16 @@ async function main() {
   await ig.simulate.preLoginFlow();
   await ig.account.login(env('IG_USERNAME'), env('IG_PASSWORD'));
 
-  // Fetches all of your followers and followings.
-  const followers = await getMyFollowers(ig);
-  const followings = await getMyFollowings(ig);
+  // If trying to search another account's followers and followings.
+  const targetUserId = process.env.IG_TARGET
+    ? (await ig.user.searchExact(process.env.IG_TARGET)).pk
+    : ig.state.cookieUserId;
 
-  // Get all of your unfollowers.
+  // Fetches all of followers and followings.
+  const followers = await getMyFollowers(ig, targetUserId);
+  const followings = await getMyFollowings(ig, targetUserId);
+
+  // Get all of unfollowers.
   const unfollowers = getUnfollowers(followers, followings);
 
   // Create data aggregation.
