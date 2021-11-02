@@ -1,0 +1,30 @@
+name: Node.js
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  node:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node: ['14', '16']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'yarn'
+          cache-dependency-path: ./yarn.lock
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Format, type-check, and lint the code
+        run: yarn lint
