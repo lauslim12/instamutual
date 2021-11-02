@@ -2,6 +2,12 @@
 
 Node.js command-line tool to find out people who do not follow you back on Instagram.
 
+## Introduction
+
+Instagram does not really provide a way for you to check if someone does not follow you back by itself. You have to do that manually. This tool helps you to do that, so you can identify who has unfollowed you and how you should act against that action.
+
+This tool does **NOT** permit you to spam. Do not use this tool in short bursts or you will risk your account being temporary blocked. I take no responsibility for that. Use this tool with your own responsibility and at your own risk.
+
 ## Requirements
 
 - [Node.js 14+](https://nodejs.org/)
