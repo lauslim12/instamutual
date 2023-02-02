@@ -1,0 +1,32 @@
+name: Run Instamutual
+
+on:
+  workflow_dispatch:
+
+jobs:
+  instamutual:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+          cache-dependency-path: ./yarn.lock
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Run script
+        run: yarn start
+
+      - name: Store output as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: instamutual-output
+          path: out
+          retention-days: 1
