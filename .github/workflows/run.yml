@@ -23,6 +23,10 @@ jobs:
 
       - name: Run script
         run: yarn start
+        env:
+          IG_USERNAME: ${{ secrets.IG_USERNAME }}
+          IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
+          IG_TARGET: ${{ secrets.IG_TARGET }}
 
       - name: Store output as artifact
         uses: actions/upload-artifact@v3
