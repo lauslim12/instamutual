@@ -2,7 +2,7 @@ import { IgApiClient } from 'instagram-private-api';
 
 import { createOutputData, writeOutputToFile } from './file';
 import { getMyFollowers, getMyFollowings, getUnfollowers } from './instagram';
-import { env } from './utils';
+import { delay, env } from './utils';
 
 /**
  * Driver code to run the whole project.
@@ -14,8 +14,7 @@ async function main() {
   const ig = new IgApiClient();
   ig.state.generateDevice(env('IG_USERNAME'));
 
-  // Try to do all activities without logging in, if possible.
-  await ig.simulate.preLoginFlow();
+  // Log in and do activities.
   await ig.account.login(env('IG_USERNAME'), env('IG_PASSWORD'));
 
   // If trying to search another account's followers and followings.
@@ -23,8 +22,12 @@ async function main() {
     ? (await ig.user.searchExact(process.env.IG_TARGET)).pk
     : ig.state.cookieUserId;
 
-  // Fetches all of followers and followings.
+  // Delay to prevent rate-limits.
+  await delay(2000);
+
+  // Fetches all of followers and followings, with delay to prevent rate limits.
   const followers = await getMyFollowers(ig, targetUserId);
+  await delay(2000);
   const followings = await getMyFollowings(ig, targetUserId);
 
   // Get all of unfollowers.
