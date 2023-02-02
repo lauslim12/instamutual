@@ -29,10 +29,7 @@ export async function getAllItemsFromFeed<T>(feed: Feed<any, T>): Promise<T[]> {
  * @param uid - Target user ID to be searched for
  * @returns All of your followers
  */
-export async function getMyFollowers(
-  ig: IgApiClient,
-  uid: string | number
-): Promise<AccountFollowersFeedResponseUsersItem[]> {
+export async function getMyFollowers(ig: IgApiClient, uid: string | number) {
   const followersFeed = ig.feed.accountFollowers(uid);
   const allFollowers = await getAllItemsFromFeed(followersFeed);
 
@@ -46,10 +43,7 @@ export async function getMyFollowers(
  * @param uid - Target user ID to be searched for
  * @returns All of your followings
  */
-export async function getMyFollowings(
-  ig: IgApiClient,
-  uid: string | number
-): Promise<AccountFollowingFeedResponseUsersItem[]> {
+export async function getMyFollowings(ig: IgApiClient, uid: string | number) {
   const followingsFeed = ig.feed.accountFollowing(uid);
   const allFollowings = await getAllItemsFromFeed(followingsFeed);
 
@@ -67,7 +61,7 @@ export async function getMyFollowings(
 export function getUnfollowers(
   followers: AccountFollowersFeedResponseUsersItem[],
   followings: AccountFollowingFeedResponseUsersItem[]
-): AccountFollowingFeedResponseUsersItem[] {
+) {
   const followersUsername = new Set(followers.map(({ username }) => username));
   const unfollowers = followings.filter(
     ({ username }) => !followersUsername.has(username)
