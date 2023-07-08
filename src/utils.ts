@@ -15,11 +15,11 @@ export function env(name: string) {
 }
 
 /**
- * Artificial delays, useful to prevent getting rate-limited.
+ * Strips `undefined` values from an array to prevent unexpected behaviors.
  *
- * @param ms - Milliseconds to wait
- * @returns A resolved promise after `ms` milliseconds
+ * @param array - A generic list of strings that can contain `undefined`.
+ * @returns An array of strings without `undefined`.
  */
-export async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export function stripUndefinedFromArray(array: (string | undefined)[]) {
+  return array.filter((data): data is string => typeof data !== undefined);
 }
