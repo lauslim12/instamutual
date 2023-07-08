@@ -6,7 +6,6 @@ import {
   readInputFromFile,
   writeOutputToFile,
 } from './file';
-import { stripUndefinedFromArray } from './utils';
 
 export const relationshipSchema = z
   .array(
@@ -22,7 +21,11 @@ export const relationshipSchema = z
         return string_list_data[0].value;
       }),
   )
-  .transform(stripUndefinedFromArray);
+  .transform((arg) =>
+    // Have to use type guard (not type assertion) to tell TypeScript that this is really a string.
+    // https://www.benmvp.com/blog/filtering-undefined-elements-from-array-typescript/
+    arg.filter((data): data is string => typeof data !== undefined),
+  );
 
 export const followingSchema = z
   .object({ relationships_following: relationshipSchema })
