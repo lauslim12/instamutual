@@ -1,8 +1,11 @@
-import path from 'node:path';
-
 import { z } from 'zod';
 
-import { createOutputData, readInputFromFile, writeOutputToFile } from './file';
+import {
+  createOutputData,
+  getFileWithDefault,
+  readInputFromFile,
+  writeOutputToFile,
+} from './file';
 import { stripUndefinedFromArray } from './utils';
 
 export const relationshipSchema = z
@@ -25,29 +28,29 @@ export const followingSchema = z
   .object({ relationships_following: relationshipSchema })
   .transform((schema) => schema.relationships_following);
 
-const FOLLOWERS_FILE_PATH = path.join(
-  __dirname,
-  '..',
-  'input',
-  'followers_1.json',
-);
-
-const FOLLOWING_FILE_PATH = path.join(
-  __dirname,
-  '..',
-  'input',
-  'following.json',
-);
-
 /**
  * Driver code to run the whole project.
  *
  * @returns Output data
  */
 async function main() {
+  // Get optional values from environment variables.
+  const { FOLLOWING_FILENAME, FOLLOWERS_FILENAME, OUTPUT_FILENAME } =
+    process.env;
+
+  // Set the paths for inputs.
+  const followersPath = getFileWithDefault(
+    FOLLOWERS_FILENAME,
+    'followers_1.json',
+  );
+  const followingPath = getFileWithDefault(
+    FOLLOWING_FILENAME,
+    'following.json',
+  );
+
   // Fetches all followers and following.
-  const rawFollowers = readInputFromFile(FOLLOWERS_FILE_PATH);
-  const rawFollowing = readInputFromFile(FOLLOWING_FILE_PATH);
+  const rawFollowers = readInputFromFile(followersPath);
+  const rawFollowing = readInputFromFile(followingPath);
 
   // Make sure the data type is according to our expectations.
   const parsedFollowers = relationshipSchema.parse(rawFollowers);
@@ -61,7 +64,7 @@ async function main() {
   const output = createOutputData(unfollowers);
 
   // Write the results to JSON file.
-  writeOutputToFile(output);
+  writeOutputToFile(output, OUTPUT_FILENAME);
 
   // Return our output.
   return output;
