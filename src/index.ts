@@ -1,8 +1,43 @@
-import { IgApiClient } from 'instagram-private-api';
+import path from 'node:path';
 
-import { createOutputData, writeOutputToFile } from './file';
-import { getMyFollowers, getMyFollowings, getUnfollowers } from './instagram';
-import { delay, env } from './utils';
+import { z } from 'zod';
+
+import { createOutputData, readInputFromFile, writeOutputToFile } from './file';
+import { stripUndefinedFromArray } from './utils';
+
+export const relationshipSchema = z
+  .array(
+    z
+      .object({ string_list_data: z.array(z.object({ value: z.string() })) })
+      .transform(({ string_list_data }) => {
+        // In an unlikely scenario that the data is not there, mark it as undefined.
+        // We will strip it separately in the next step.
+        if (!string_list_data[0]) {
+          return undefined;
+        }
+
+        return string_list_data[0].value;
+      }),
+  )
+  .transform(stripUndefinedFromArray);
+
+export const followingSchema = z
+  .object({ relationships_following: relationshipSchema })
+  .transform((schema) => schema.relationships_following);
+
+const FOLLOWERS_FILE_PATH = path.join(
+  __dirname,
+  '..',
+  'input',
+  'followers_1.json',
+);
+
+const FOLLOWING_FILE_PATH = path.join(
+  __dirname,
+  '..',
+  'input',
+  'following.json',
+);
 
 /**
  * Driver code to run the whole project.
@@ -10,33 +45,22 @@ import { delay, env } from './utils';
  * @returns Output data
  */
 async function main() {
-  // Initialize Instagram client with username and password.
-  const ig = new IgApiClient();
-  ig.state.generateDevice(env('IG_USERNAME'));
+  // Fetches all followers and following.
+  const rawFollowers = readInputFromFile(FOLLOWERS_FILE_PATH);
+  const rawFollowing = readInputFromFile(FOLLOWING_FILE_PATH);
 
-  // Log in and do activities.
-  await ig.account.login(env('IG_USERNAME'), env('IG_PASSWORD'));
+  // Make sure the data type is according to our expectations.
+  const parsedFollowers = relationshipSchema.parse(rawFollowers);
+  const parsedFollowing = followingSchema.parse(rawFollowing);
 
-  // If trying to search another account's followers and followings.
-  const targetUserId = process.env.IG_TARGET
-    ? (await ig.user.searchExact(process.env.IG_TARGET)).pk
-    : ig.state.cookieUserId;
+  // Do a mapping algorithm to find people who do not follow back.
+  const followers = new Set(parsedFollowers);
+  const unfollowers = parsedFollowing.filter((value) => !followers.has(value));
 
-  // Delay to prevent rate-limits.
-  await delay(2000);
-
-  // Fetches all of followers and followings, with delay to prevent rate limits.
-  const followers = await getMyFollowers(ig, targetUserId);
-  await delay(2000);
-  const followings = await getMyFollowings(ig, targetUserId);
-
-  // Get all of unfollowers.
-  const unfollowers = getUnfollowers(followers, followings);
-
-  // Create data aggregation.
+  // Create a data aggregation.
   const output = createOutputData(unfollowers);
 
-  // Write to JSON file.
+  // Write the results to JSON file.
   writeOutputToFile(output);
 
   // Return our output.

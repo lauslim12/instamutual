@@ -1,5 +1,10 @@
-# Script output
-output.json
+# Script input, ignore everything except `.gitkeep`
+input/*
+!input/.gitkeep
+
+# Script output, ignore everything except `.gitkeep`
+out/*
+!out/.gitkeep
 
 # Logs
 logs
