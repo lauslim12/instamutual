@@ -29,7 +29,7 @@ flowchart TD
     INPUTFILESYSTEM --> D
     E["Parses the data (followers and following) according to the expected schema"] --> F
     F[Transforms the data of followers into a set] --> G
-    G[From the list of following, filter whether it is in the followers set or not] --> H
+    G[From the list of following, filter whether each following is in the followers set or not] --> H
     H[Create an output data aggregation from those unfollowers] --> I
     I[Store the output to a file to be read later as a report]
     I --> FILESYSTEM[(Output Filesystem)]
