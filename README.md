@@ -1,10 +1,10 @@
 # Instamutual
 
-Node.js command-line tool to find out people who do not follow you back on Instagram. This repository does not use any third-party libraries and will just purely use your own downloaded data (per your own request) as they are.
+Node.js command-line tool to find out people who do not follow you back on Instagram. This repository does not use any third-party libraries or unofficial APIs and will just purely use your own downloaded data (per your own request) as they are without modifying anything at all.
 
 ## Introduction
 
-Instagram does not really provide a way for you to check if someone does not follow you back by itself. You have to do that manually. This tool helps you to do that, so you can identify who has unfollowed you and how you should act or retaliate against that action.
+Instagram does not really provide a way for you to check if someone does not follow you back by itself. You have to do that manually. This tool helps you to do that, so you can identify who has unfollowed you and how you should act or retaliate against that action. This is a problem that has been here for a while (couple of years). Recently, Instagram has released "Download Data" feature, and one of the options is to download the data as JSON, which makes this problem easy to solve because of its compatibility with various programming languages.
 
 ## Requirements
 
@@ -12,6 +12,30 @@ Instagram does not really provide a way for you to check if someone does not fol
 - [Yarn 1.22+](https://yarnpkg.com/)
 
 You can also use `npm` if you want to. Replace all `yarn` occurences with `npm`.
+
+## Flowchart
+
+```mermaid
+---
+title: Instamutual Flowchart
+---
+flowchart TD
+    START([START]) --> A
+    A[Download your data from Instagram] --> B{Have paths in environment variables?}
+    B --> |Yes| C[Fetches data from paths specified by environment variables] --> E
+    B --> |No| D[Fetches data from default paths] --> E
+    INPUTFILESYSTEM[(Input Filesystem)]
+    INPUTFILESYSTEM --> C
+    INPUTFILESYSTEM --> D
+    E["Parses the data (followers and following) according to the expected schema"] --> F
+    F[Transforms the data of followers into a set] --> G
+    G[From the list of following, filter whether it is in the followers set or not] --> H
+    H[Create an output data aggregation from those unfollowers] --> I
+    I[Store the output to a file to be read later as a report]
+    I --> FILESYSTEM[(Output Filesystem)]
+    I --> END
+    END([END])
+```
 
 ## Usage
 
@@ -43,11 +67,11 @@ npm install
   - In the `Format` section, change it to `JSON` and change the `Date range` to `All time`.
   - Optionally, you can set `Media quality` to `High` (it doesn't really matter).
   - Click `Submit request` and wait for Instagram to reply to your request. They should get back to you via email.
-  - Download your data from the link that Instagram gave you. You should get a `.zip` file and you have to unzip it.
+  - Download your data from the link that Instagram gave you. You should get a `.zip` file.
 
 - After getting your data from Instagram, you have to move the data to this repository:
 
-  - Open the downloaded file.
+  - Unzip the downloaded `.zip` file.
   - You will get a folder titled `followers_and_following`, and there should be a file named `followers_1.json` and `following.json`. The name may be different, but it should be pretty straightforward to get your data from there.
   - Move both files to `input` folder in your cloned repository.
 
@@ -72,6 +96,12 @@ yarn start
 ```
 
 - Done! The output will be placed in the `out` folder. It will either be `output.json` or your chosen filename!
+
+- You have to do this once in a while (download your data and do all of the steps again) to stay updated on your unfollowers.
+
+## Tests
+
+So far, this program does not have tests yet. Contributions are very welcome.
 
 ## Contributing
 
