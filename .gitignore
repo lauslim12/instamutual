@@ -1,3 +1,6 @@
+# OS X
+.DS_Store
+
 # Script input, ignore everything except `.gitkeep`
 input/*
 !input/.gitkeep
