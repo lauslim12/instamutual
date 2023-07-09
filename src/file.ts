@@ -1,10 +1,13 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * Represents the type used as the output.
  */
-type Output = { count: number; unfollowers: string[] };
+type Output = {
+  count: { followers: number; following: number; unfollowers: number };
+  data: { followers: string[]; following: string[]; unfollowers: string[] };
+};
 
 /**
  * Declares a path from root. Concatenates it with `newPaths` to get
@@ -21,14 +24,31 @@ function declarePathFromRoot(...newPaths: string[]) {
  * Creates an output data based on your unfollowers.
  *
  * @param unfollowers - Your unfollowers's usernames. This is an array.
- * @returns An object of type 'Output'.
+ * @param followers - Your followers in a set format.
+ * @param following - Your following in a set format.
+ * @returns An object of type `Output`.
  */
-export function createOutputData(unfollowers: string[]) {
-  return { count: unfollowers.length, unfollowers };
+export function createOutputData(
+  unfollowers: string[],
+  followers: Set<string>,
+  following: Set<string>,
+) {
+  return {
+    count: {
+      followers: followers.size,
+      following: following.size,
+      unfollowers: unfollowers.length,
+    },
+    data: {
+      followers: [...followers],
+      following: [...following],
+      unfollowers,
+    },
+  };
 }
 
 /**
- * Writes an output to a JSON file in 'out' folder in the root of the project.
+ * Writes an output to a JSON file in `out` folder in the root of the project.
  * It will throw an error on insufficient file permissions.
  *
  * @param output - Output data that is ready to be processed.

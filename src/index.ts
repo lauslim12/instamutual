@@ -34,9 +34,9 @@ export const followingSchema = z
 /**
  * Driver code to run the whole project.
  *
- * @returns Output data
+ * @returns Output data.
  */
-async function main() {
+function main() {
   // Get optional values from environment variables.
   const { FOLLOWING_FILENAME, FOLLOWERS_FILENAME, OUTPUT_FILENAME } =
     process.env;
@@ -59,12 +59,13 @@ async function main() {
   const parsedFollowers = relationshipSchema.parse(rawFollowers);
   const parsedFollowing = followingSchema.parse(rawFollowing);
 
-  // Do a mapping algorithm to find people who do not follow back.
+  // Do a mapping algorithm to find people who do not follow back in `unfollowers` variable.
   const followers = new Set(parsedFollowers);
+  const following = new Set(parsedFollowing);
   const unfollowers = parsedFollowing.filter((value) => !followers.has(value));
 
   // Create a data aggregation.
-  const output = createOutputData(unfollowers);
+  const output = createOutputData(unfollowers, followers, following);
 
   // Write the results to JSON file.
   writeOutputToFile(output, OUTPUT_FILENAME);
@@ -77,13 +78,12 @@ async function main() {
  * Simulates 'function main()' in most programming languages.
  */
 if (require.main === module) {
-  main()
-    .then(() => {
-      console.log('Program has finished running successfully.');
-      process.exit(0);
-    })
-    .catch((err) => {
-      console.error(err);
-      process.exit(1);
-    });
+  try {
+    main();
+    console.log('Program has finished running successfully.');
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
