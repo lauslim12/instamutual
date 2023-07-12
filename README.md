@@ -2,9 +2,11 @@
 
 Node.js command-line tool to find out people who do not follow you back on Instagram. This repository does not use any third-party libraries or unofficial APIs and will just purely use your own downloaded data (per your own request) as they are without modifying anything at all.
 
-## Introduction
+## About
 
 Instagram does not really provide a way for you to check if someone does not follow you back by itself. You have to do that manually. This tool helps you to do that, so you can identify who has unfollowed you and how you should act or retaliate against that action. This is a problem that has been here for a while (couple of years). Recently, Instagram has released "Download Data" feature, and one of the options is to download the data as JSON, which makes this problem easy to solve because of its compatibility with various programming languages.
+
+When I was designing this script, I wanted it to be automatic, so I could just upload my data on the Cloud and my script will read it. The first idea I thought was using Google Drive's Link Sharing to achieve this. But, as time passes by, I think it's better for this to be used locally. If I were to upload the data on the Internet, there is a possibility of Personal Identifiable Information (PII) to be leaked into the Internet, and Instagram definitely fits into the category of PII, so I scrapped the Cloud idea and just make it so it's run locally. Perhaps in the future we could implement Cloud with Authentication using Drive API, so we can just upload our data into there and the script will make an authenticated request to get that data. This way, we could get the balance between convenience and security.
 
 ## Requirements
 
